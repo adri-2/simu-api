@@ -1,10 +1,30 @@
 from django.shortcuts import render
+"""
+This module defines API views for managing products, categories, import simulations, and duties breakdowns.
+Classes:
+    ProductViewset(ReadOnlyModelViewSet):
+        Viewset for listing and retrieving products. Accessible only by admin users.
+    AdminProductViewset(ModelViewSet):
+        Viewset for full CRUD operations on products. Accessible only by admin users.
+    CategoryViewset(ReadOnlyModelViewSet):
+        Viewset for listing and retrieving categories. Accessible by authenticated users.
+    AdminCategoryViewset(ModelViewSet):
+        Viewset for full CRUD operations on categories. Accessible only by admin users.
+    ImportSimulationViewset(ModelViewSet):
+        Viewset for managing import simulations. Accessible only by the owner of the simulation.
+    DutiesBreakdownViewset(ModelViewSet):
+        Viewset for managing duties breakdowns. Accessible by authenticated users and filtered by user.
+    ProductCategoryView(APIView):
+        API view to retrieve the category of a specific product by its primary key. Accessible by authenticated users.
+"""
 from rest_framework.viewsets import ModelViewSet, ReadOnlyModelViewSet
 from .models import ( Product,ImportSimulation,Category,DutiesBreakdown)
 from .serializers import ProductSerializer,CategorySerializer,ImportSimulationSerializer,DutiesBreakdownSerializer
 # Create your views here.
 from .permissions import IsAdminAuthenticated, IsOwner
 from rest_framework.permissions import IsAuthenticated
+from rest_framework.views import APIView
+from rest_framework.response import Response
 
 class ProductViewset(ReadOnlyModelViewSet):
     
@@ -62,5 +82,17 @@ class DutiesBreakdownViewset(ModelViewSet):
     
     def get_queryset(self):
         return DutiesBreakdown.objects.filter(user=self.request.user)
-    
-    
+
+class ProductCategoryView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request, pk):
+        try:
+            product = Product.objects.get(pk=pk)
+            category = product.category
+            serializer = CategorySerializer(category)
+            return Response(serializer.data)
+        except Product.DoesNotExist:
+            return Response({'error': 'Produit non trouvé.'}, status=404)
+
+

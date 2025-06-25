@@ -1,5 +1,22 @@
-from .models import ( Product,Category,ImportSimulation,DutiesBreakdown)
+from .models import (Product, Category, ImportSimulation, DutiesBreakdown)
 from rest_framework import serializers
+
+"""
+Sérialiseur pour le modèle Product.
+Sérialise tous les champs de l'instance Product.
+"""
+"""
+Sérialiseur pour le modèle Category.
+Sérialise tous les champs de l'instance Category.
+"""
+"""
+Sérialiseur pour le modèle ImportSimulation.
+Sérialise tous les champs de l'instance ImportSimulation.
+"""
+"""
+Sérialiseur pour le modèle DutiesBreakdown.
+Sérialise tous les champs de l'instance DutiesBreakdown.
+"""
 
 class ProductSerializer(serializers.ModelSerializer):
     
