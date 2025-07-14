@@ -23,7 +23,7 @@ from django.shortcuts import redirect
 urlpatterns = [
     # path('api/auth/', include('dj_rest_auth.urls')),
    
-    path('',lambda reuest: redirect('/api/auth/login')),
+    # path('',lambda reuest: redirect('/api/auth/login')),
     path('admin/', admin.site.urls),
     path('api/', include('api.urls')) ,
   

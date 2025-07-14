@@ -1,3 +1,32 @@
-/frontend
-.zip
-.mdj
+# Node.js dependencies
+node_modules/
+.env
+
+# Build outputs
+dist/
+.cache/
+nuxt/
+.nuxt/
+.nuxtignore
+.nuxtg
+
+# IDE and editor files
+.vscode/
+.idea/
+**/migrations/
+# OS files
+.DS_Store
+
+# Archives and database
+*.zip
+*.sqlite
+
+# UML files
+*.mdj
+
+# Migrations
+
+./app/migrations/**
+
+# Frontend folder
+frontend/
