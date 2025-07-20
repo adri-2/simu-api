@@ -23,6 +23,6 @@ psycopg2
 psycopg2-binary
 python-dotenv
 drf-yasg
- whitenoise
+whitenoise
 
 
