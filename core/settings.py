@@ -105,6 +105,7 @@ CORS_ALLOW_ALL_ORIGINS = True
 
 # SITE_ID = 1
 MIDDLEWARE = [
+      'whitenoise.middleware.WhiteNoiseMiddleware',
      'corsheaders.middleware.CorsMiddleware',
     # 'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.middleware.security.SecurityMiddleware',
@@ -115,6 +116,8 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
+
+STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
 
 ROOT_URLCONF = 'core.urls'
 

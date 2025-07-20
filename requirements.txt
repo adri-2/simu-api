@@ -1,3 +1,16 @@
+# Django 5.2.4 : Framework web Python de haut niveau pour un développement rapide.
+# django-allauth 65.9.0 : Ensemble intégré d'applications Django pour l'authentification, l'inscription, la gestion de compte et l'authentification via des comptes tiers (sociaux).
+# django-cors-headers 4.7.0 : Application Django pour gérer les en-têtes serveur nécessaires au Cross-Origin Resource Sharing (CORS).
+# django-debug-toolbar 5.2.0 : Ensemble configurable de panneaux affichant diverses informations de débogage sur la requête/réponse courante.
+# django-filter 25.1 : Application Django pour ajouter des capacités de filtrage à Django REST Framework et aux vues génériques basées sur les classes.
+# djangorestframework 3.16.0 : Boîte à outils puissante et flexible pour construire des API Web avec Django.
+# djangorestframework-simplejwt 5.5.0 : Plugin d'authentification JSON Web Token pour Django REST Framework.
+# dj-database-url : Utilitaire pour utiliser la variable d'environnement DATABASE_URL afin de configurer les paramètres de base de données de Django.
+# psycopg2 : Adaptateur de base de données PostgreSQL pour Python.
+# psycopg2-binary : Package autonome contenant la bibliothèque psycopg2 et ses dépendances C.
+# python-dotenv : Lit les paires clé-valeur d'un fichier .env et peut les définir comme variables d'environnement.
+# drf-yasg : Génération automatisée de schémas Swagger/OpenAPI 2.0 à partir du code Django REST Framework.
+# whitenoise : Sert les fichiers statiques directement depuis l'application WSGI, généralement utilisé en production.
 django==5.2.4
 django-allauth==65.9.0
 django-cors-headers==4.7.0
@@ -10,5 +23,6 @@ psycopg2
 psycopg2-binary
 python-dotenv
 drf-yasg
+ whitenoise
 
 
