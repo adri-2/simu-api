@@ -25,7 +25,7 @@ SECRET_KEY = 'django-insecure-do=n)t*9z^ngo+$q1(s6_yp!=*z!gyy-g60f5$y)qc^f=8zpes
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
 
 # Application definition
@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     # ...
     'rest_framework',
     'rest_framework_simplejwt',
+       'drf_yasg',
     'django_filters', # Pour le filtrage si nécessaire
     'api', # Le nom de ton application principale (ou une app nommée 'simu')
     # ...
@@ -52,9 +53,12 @@ INSTALLED_APPS = [
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework_simplejwt.authentication.JWTAuthentication',
+        #  'rest_framework.renderers.BrowsableAPIRenderer',
+        
     ),
     'DEFAULT_PERMISSION_CLASSES': (
-        'rest_framework.permissions.IsAuthenticated',
+        'api.permissions.IsOwnerOrAdmin',  # Utilise la permission personnalisée
+        'rest_framework.permissions.IsAuthenticated',  # Assure que l'utilisateur est authentifié
     ),
     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
     'PAGE_SIZE': 10, # Nombre d'éléments par page par défaut
@@ -96,13 +100,7 @@ SIMPLE_JWT = {
 }
 
 
-# CORS_ALLOWED_ORIGINS = [
-#      'http://localhost:5173',
-   
-#     #    'http://localhost:8080' ,
-#         # 'http://localhost:8000' # Frontend Vue.js
-#         #  'http://localhost:3000' ,
-# ]
+
 CORS_ALLOW_ALL_ORIGINS = True 
 
 # SITE_ID = 1
@@ -140,12 +138,29 @@ WSGI_APPLICATION = 'core.wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
-
-DATABASES = {
+if DEBUG:
+    DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
         'NAME': BASE_DIR / 'db.sqlite3',
     }
+    }
+else:
+    # Configuration pour la base de données de production sur railway
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.postgresql',
+            'NAME': 'railway',
+            'USER': 'postgres',
+            'PASSWORD': 'kUYQgVvAqhlWXQEmabLnjryDUWSyFusr',
+            'HOST': 'postgres.railway.internal',
+            'PORT': '5432',
+        }
+    }
+SWAGGER_SETTINGS = {
+    # ...
+    'VALIDATOR_URL': 'http://localhost:8189',
+    # ...
 }
 
 
