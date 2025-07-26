@@ -80,17 +80,17 @@ class ProductCategoryViewSet(viewsets.ModelViewSet):
     """
     queryset = ProductCategory.objects.all()
     serializer_class = ProductCategorySerializer
-    permission_classes = (IsAuthenticated,) # Par défaut, authentifié requis
+    # permission_classes = (IsAuthenticated,) # Par défaut, authentifié requis
 
-    def get_permissions(self):
-        """
-        Instancie et retourne la liste des permissions requises par cette vue.
-        """
-        if self.action in ['create', 'update', 'partial_update', 'destroy']:
-            self.permission_classes = [IsAdminUser] # Seuls les admins peuvent modifier
-        else:
-            self.permission_classes = [IsAuthenticated] # Lecture pour tous les authentifiés
-        return [permission() for permission in self.permission_classes]
+    # def get_permissions(self):
+    #     """
+    #     Instancie et retourne la liste des permissions requises par cette vue.
+    #     """
+    #     if self.action in ['create', 'update', 'partial_update', 'destroy']:
+    #         self.permission_classes = [IsAdminUser] # Seuls les admins peuvent modifier
+    #     else:
+    #         self.permission_classes = [IsAuthenticated] # Lecture pour tous les authentifiés
+    #     return [permission() for permission in self.permission_classes]
 
 class ProductViewSet(viewsets.ModelViewSet):
     """
@@ -100,17 +100,17 @@ class ProductViewSet(viewsets.ModelViewSet):
     """
     queryset = Product.objects.all()
     serializer_class = ProductSerializer
-    permission_classes = (IsAuthenticated,)
+    # permission_classes = (IsAuthenticated,)
 
-    def get_permissions(self):
-        """
-        Instancie et retourne la liste des permissions requises par cette vue.
-        """
-        if self.action in ['create', 'update', 'partial_update', 'destroy']:
-            self.permission_classes = [IsAdminUser] # Seuls les admins peuvent modifier
-        else:
-            self.permission_classes = [IsAuthenticated] # Lecture pour tous les authentifiés
-        return [permission() for permission in self.permission_classes]
+    # def get_permissions(self):
+        # """
+        # Instancie et retourne la liste des permissions requises par cette vue.
+        # """
+        # if self.action in ['create', 'update', 'partial_update', 'destroy']:
+        #     self.permission_classes = [IsAdminUser] # Seuls les admins peuvent modifier
+        # else:
+        #     self.permission_classes = [IsAuthenticated] # Lecture pour tous les authentifiés
+        # return [permission() for permission in self.permission_classes]
 
 class SimulationViewSet(viewsets.ModelViewSet):
     """
@@ -119,15 +119,15 @@ class SimulationViewSet(viewsets.ModelViewSet):
     - Les administrateurs peuvent gérer toutes les simulations.
     """
     queryset = Simulation.objects.all()
-    permission_classes = (IsAuthenticated, IsOwnerOrAdmin) # Sera affiné par get_queryset et permissions
+    # permission_classes = (IsAuthenticated, IsOwnerOrAdmin) # Sera affiné par get_queryset et permissions
 
-    def get_serializer_class(self):
-        """
-        Retourne le serializer approprié en fonction de l'action.
-        """
-        if self.action == 'create':
-            return SimulationCreateSerializer
-        return SimulationDetailSerializer
+    # def get_serializer_class(self):
+    #     """
+    #     Retourne le serializer approprié en fonction de l'action.
+    #     """
+    #     if self.action == 'create':
+    #         return SimulationCreateSerializer
+    #     return SimulationDetailSerializer
 
     def get_queryset(self):
         """
