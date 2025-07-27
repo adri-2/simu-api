@@ -42,7 +42,7 @@ INSTALLED_APPS = [
     # 'whitenoise.middleware.WhiteNoiseMiddleware',  # Pour servir les fichiers statiques en production
     # ...
     'rest_framework',
-    'rest_framework_simplejwt',
+    # 'rest_framework_simplejwt',
        'drf_yasg',
     'django_filters', # Pour le filtrage si nécessaire
     'api', # Le nom de ton application principale (ou une app nommée 'simu')
@@ -51,15 +51,15 @@ INSTALLED_APPS = [
 
 # Configuration DRF
 REST_FRAMEWORK = {
-    'DEFAULT_AUTHENTICATION_CLASSES': (
-        'rest_framework_simplejwt.authentication.JWTAuthentication',
-        #  'rest_framework.renderers.BrowsableAPIRenderer',
+    # 'DEFAULT_AUTHENTICATION_CLASSES': (
+    #     'rest_framework_simplejwt.authentication.JWTAuthentication',
+    #     #  'rest_framework.renderers.BrowsableAPIRenderer',
         
-    ),
-    'DEFAULT_PERMISSION_CLASSES': (
-        'api.permissions.IsOwnerOrAdmin',  # Utilise la permission personnalisée
-        'rest_framework.permissions.IsAuthenticated',  # Assure que l'utilisateur est authentifié
-    ),
+    # ),
+    # 'DEFAULT_PERMISSION_CLASSES': (
+    #     # 'api.permissions.IsOwnerOrAdmin',  # Utilise la permission personnalisée
+    #     'rest_framework.permissions.IsAuthenticated',  # Assure que l'utilisateur est authentifié
+    # ),
     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
     'PAGE_SIZE': 10, # Nombre d'éléments par page par défaut
     'DEFAULT_FILTER_BACKENDS': (
@@ -68,36 +68,36 @@ REST_FRAMEWORK = {
 }
 
 # Configuration JWT
-from datetime import timedelta
+# from datetime import timedelta
 
-SIMPLE_JWT = {
-    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=60),
-    'REFRESH_TOKEN_LIFETIME': timedelta(days=1),
-    'ROTATE_REFRESH_TOKENS': False,
-    'BLACKLIST_AFTER_ROTATION': True,
-    'UPDATE_LAST_LOGIN': False,
+# SIMPLE_JWT = {
+#     'ACCESS_TOKEN_LIFETIME': timedelta(minutes=60),
+#     'REFRESH_TOKEN_LIFETIME': timedelta(days=1),
+#     'ROTATE_REFRESH_TOKENS': False,
+#     'BLACKLIST_AFTER_ROTATION': True,
+#     'UPDATE_LAST_LOGIN': False,
 
-    'ALGORITHM': 'HS256',
-    'SIGNING_KEY': 'your-super-secret-key', # CHANGE THIS IN PRODUCTION
-    'VERIFYING_KEY': None,
-    'AUDIENCE': None,
-    'ISSUER': None,
+#     'ALGORITHM': 'HS256',
+#     'SIGNING_KEY': 'your-super-secret-key', # CHANGE THIS IN PRODUCTION
+#     'VERIFYING_KEY': None,
+#     'AUDIENCE': None,
+#     'ISSUER': None,
 
-    'AUTH_HEADER_TYPES': ('Bearer',),
-    'AUTH_HEADER_NAME': 'HTTP_AUTHORIZATION',
-    'USER_ID_FIELD': 'id',
-    'USER_ID_CLAIM': 'user_id',
-    'USER_AUTHENTICATION_RULE': 'rest_framework_simplejwt.authentication.default_user_authentication_rule',
+#     'AUTH_HEADER_TYPES': ('Bearer',),
+#     'AUTH_HEADER_NAME': 'HTTP_AUTHORIZATION',
+#     'USER_ID_FIELD': 'id',
+#     'USER_ID_CLAIM': 'user_id',
+#     'USER_AUTHENTICATION_RULE': 'rest_framework_simplejwt.authentication.default_user_authentication_rule',
 
-    'AUTH_TOKEN_CLASSES': ('rest_framework_simplejwt.tokens.AccessToken',),
-    'TOKEN_TYPE_CLAIM': 'token_type',
+#     'AUTH_TOKEN_CLASSES': ('rest_framework_simplejwt.tokens.AccessToken',),
+#     'TOKEN_TYPE_CLAIM': 'token_type',
 
-    'JTI_CLAIM': 'jti',
+#     'JTI_CLAIM': 'jti',
 
-    'SLIDING_TOKEN_REFRESH_EXP_CLAIM': 'refresh_exp',
-    'SLIDING_TOKEN_LIFETIME': timedelta(minutes=5),
-    'SLIDING_TOKEN_REFRESH_LIFETIME': timedelta(days=1),
-}
+#     'SLIDING_TOKEN_REFRESH_EXP_CLAIM': 'refresh_exp',
+#     'SLIDING_TOKEN_LIFETIME': timedelta(minutes=5),
+#     'SLIDING_TOKEN_REFRESH_LIFETIME': timedelta(days=1),
+# }
 
 
 

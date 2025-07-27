@@ -19,7 +19,7 @@ from .serializers import (
     ProductSerializer, SimulationCreateSerializer, SimulationDetailSerializer,
     PaymentConfirmationSerializer
 )
-from .permissions import IsOwnerOrAdmin # Nous allons créer ce fichier plus tard
+# from .permissions import IsOwnerOrAdmin # Nous allons créer ce fichier plus tard
 
 class CustomTokenObtainPairView(TokenObtainPairView):
     """
@@ -64,7 +64,7 @@ class UserProfileView(generics.RetrieveUpdateAPIView):
     """
     queryset = User.objects.all()
     serializer_class = UserProfileSerializer
-    permission_classes = (IsAuthenticated, IsOwnerOrAdmin)
+    # permission_classes = (IsAuthenticated, IsOwnerOrAdmin)
 
     def get_object(self):
         """
@@ -83,14 +83,14 @@ class ProductCategoryViewSet(viewsets.ModelViewSet):
     # permission_classes = (IsAuthenticated,) # Par défaut, authentifié requis
 
     # def get_permissions(self):
-    #     """
-    #     Instancie et retourne la liste des permissions requises par cette vue.
-    #     """
-    #     if self.action in ['create', 'update', 'partial_update', 'destroy']:
-    #         self.permission_classes = [IsAdminUser] # Seuls les admins peuvent modifier
-    #     else:
-    #         self.permission_classes = [IsAuthenticated] # Lecture pour tous les authentifiés
-    #     return [permission() for permission in self.permission_classes]
+        # """
+        # Instancie et retourne la liste des permissions requises par cette vue.
+        # """
+        # if self.action in ['create', 'update', 'partial_update', 'destroy']:
+        #     self.permission_classes = [IsAdminUser] # Seuls les admins peuvent modifier
+        # else:
+        #     self.permission_classes = [IsAuthenticated] # Lecture pour tous les authentifiés
+        # return [permission() for permission in self.permission_classes]
 
 class ProductViewSet(viewsets.ModelViewSet):
     """
@@ -103,14 +103,14 @@ class ProductViewSet(viewsets.ModelViewSet):
     # permission_classes = (IsAuthenticated,)
 
     # def get_permissions(self):
-        # """
-        # Instancie et retourne la liste des permissions requises par cette vue.
-        # """
-        # if self.action in ['create', 'update', 'partial_update', 'destroy']:
-        #     self.permission_classes = [IsAdminUser] # Seuls les admins peuvent modifier
-        # else:
-        #     self.permission_classes = [IsAuthenticated] # Lecture pour tous les authentifiés
-        # return [permission() for permission in self.permission_classes]
+    #     """
+    #     Instancie et retourne la liste des permissions requises par cette vue.
+    #     """
+    #     if self.action in ['create', 'update', 'partial_update', 'destroy']:
+    #         self.permission_classes = [IsAdminUser] # Seuls les admins peuvent modifier
+    #     else:
+    #         self.permission_classes = [IsAuthenticated] # Lecture pour tous les authentifiés
+    #     return [permission() for permission in self.permission_classes]
 
 class SimulationViewSet(viewsets.ModelViewSet):
     """
@@ -121,13 +121,13 @@ class SimulationViewSet(viewsets.ModelViewSet):
     queryset = Simulation.objects.all()
     # permission_classes = (IsAuthenticated, IsOwnerOrAdmin) # Sera affiné par get_queryset et permissions
 
-    # def get_serializer_class(self):
-    #     """
-    #     Retourne le serializer approprié en fonction de l'action.
-    #     """
-    #     if self.action == 'create':
-    #         return SimulationCreateSerializer
-    #     return SimulationDetailSerializer
+    def get_serializer_class(self):
+        """
+        Retourne le serializer approprié en fonction de l'action.
+        """
+        if self.action == 'create':
+            return SimulationCreateSerializer
+        return SimulationDetailSerializer
 
     def get_queryset(self):
         """
@@ -164,7 +164,7 @@ class SimulationViewSet(viewsets.ModelViewSet):
     # Endpoint pour confirmer le paiement
     # Route: /api/simulations/{id}/confirm_payment/
     
-    @action(detail=True, methods=['post'], permission_classes=[IsAuthenticated, IsOwnerOrAdmin])
+    @action(detail=True, methods=['post'])
     def confirm_payment(self, request, pk=None):
         """
         Confirme le paiement d'une simulation et envoie le résultat par email.
