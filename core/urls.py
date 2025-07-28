@@ -43,6 +43,7 @@ urlpatterns = [
     # path('api/auth/', include('dj_rest_auth.urls')),
    
     # path('',lambda reuest: redirect('/api/auth/login')),
+        path('', lambda request: redirect('schema-swagger-ui', permanent=False)),
     path('admin/', admin.site.urls),
     path('api/', include('api.urls')) ,
       # Documentation Swagger

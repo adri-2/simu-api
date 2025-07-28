@@ -1,93 +1,84 @@
 # core/serializers.py
 from rest_framework import serializers
 from django.contrib.auth import get_user_model
-from .models import ImporterProfile , ProductCategory, Product, Simulation, LegalPersonality, TariffSpecies
+from .models import ProductCategory, Product, Simulation,  TariffSpecies
 
 User = get_user_model()
+
 
 class UserRegistrationSerializer(serializers.ModelSerializer):
     """
     Serializer pour l'enregistrement d'un nouvel utilisateur.
-    Gère la création du mot de passe et du profil importateur.
+    Crée automatiquement username à partir de first_name + last_name.
     """
     password = serializers.CharField(write_only=True, required=True, style={'input_type': 'password'})
     password2 = serializers.CharField(write_only=True, required=True, style={'input_type': 'password'})
-    full_name = serializers.CharField(write_only=True, required=True)
-    legal_personality = serializers.ChoiceField(
-        choices=LegalPersonality.choices,
-        default=LegalPersonality.PHYSICAL,
-        write_only=True
-    )
 
     class Meta:
         model = User
         fields = (
-            'email', 'username', 'password', 'password2', 'phone_number',
-            'full_name', 'legal_personality', 'is_professional'
+            'email', 'password', 'password2',
+            'phone_number', 'first_name', 'last_name',
+            'is_professional'  # lecture seule
         )
         extra_kwargs = {
-            'username': {'required': True}, # Rendre le username requis pour l'enregistrement
-            'is_professional': {'read_only': True}, # Les utilisateurs ne peuvent pas s'inscrire comme pro directement
+            'is_professional': {'read_only': True},
         }
 
     def validate(self, data):
-        """
-        Valide que les mots de passe correspondent et que l'email est unique.
-        """
         if data['password'] != data['password2']:
-            raise serializers.ValidationError({"password": "Les deux mots de passe ne correspondent pas."})
+            raise serializers.ValidationError({"password": "Les mots de passe ne correspondent pas."})
         if User.objects.filter(email=data['email']).exists():
             raise serializers.ValidationError({"email": "Cet email est déjà utilisé."})
         return data
 
     def create(self, validated_data):
-        """
-        Crée un nouvel utilisateur et son profil importateur associé.
-        """
-        validated_data.pop('password2') # Supprimer le champ de confirmation de mot de passe
-        full_name = validated_data.pop('full_name')
-        legal_personality = validated_data.pop('legal_personality')
+        validated_data.pop('password2')
+        password = validated_data.pop('password')
 
-        user = User.objects.create_user(
+        # Création automatique du username
+        first_name = validated_data.get('first_name', '').strip()
+        last_name = validated_data.get('last_name', '').strip()
+        username = (first_name +' ' +last_name).lower()
+
+        user = User(
             email=validated_data['email'],
-            username=validated_data['username'],
-            password=validated_data['password'],
+            username=username,
+            first_name=first_name,
+            last_name=last_name,
             phone_number=validated_data.get('phone_number'),
-            is_professional=False # Par défaut, un nouvel utilisateur n'est pas professionnel
+            is_professional=False
         )
-        ImporterProfile.objects.create(
-            user=user,
-            full_name=full_name,
-            legal_personality=legal_personality
-        )
+        user.set_password(password)
+        user.save()
         return user
 
 class UserProfileSerializer(serializers.ModelSerializer):
     """
     Serializer pour la consultation et la mise à jour du profil utilisateur.
     """
-    importer_profile = serializers.SerializerMethodField()
+    # importer_profile = serializers.SerializerMethodField()
 
     class Meta:
         model = User
-        fields = ('id', 'email', 'username', 'phone_number', 'is_professional', 'date_joined', 'last_login', 'importer_profile')
+        fields = ('id', 'email', 'username', 'phone_number','first_name','last_name', 'is_professional', 'date_joined', 'last_login', )
         read_only_fields = ('email', 'username', 'is_professional', 'date_joined', 'last_login')
 
-    def get_importer_profile(self, obj):
-        """
-        Retourne les détails du profil importateur si existant.
-        """
-        if hasattr(obj, 'importer_profile'):
-            return ImporterProfileSerializer(obj.importer_profile).data
-        return None
+    # def get_importer_profile(self, obj):
+    #     """
+    #     Retourne les détails du profil importateur si existant.
+    #     """
+    #     if hasattr(obj, 'importer_profile'):
+    #         return ImporterProfileSerializer(obj.importer_profile).data
+    #     return None
 
-class ImporterProfileSerializer(serializers.ModelSerializer):
-    """
-    Serializer pour le profil importateur.
-    """
-    class Meta:
-        model = ImporterProfile
-        fields = ('full_name', 'legal_personality')
+# class ImporterProfileSerializer(serializers.ModelSerializer):
+#     """
+#     Serializer pour le profil importateur.
+#     """
+#     class Meta:
+#         model = ImporterProfile
+#         fields = ('full_name', 'legal_personality')
 
 class ProductCategorySerializer(serializers.ModelSerializer):
     """

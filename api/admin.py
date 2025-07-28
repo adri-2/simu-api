@@ -2,7 +2,7 @@
 
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
-from .models import User, ImporterProfile, ProductCategory, Product, Simulation
+from .models import User,  ProductCategory, Product, Simulation
 
 @admin.register(User)
 class CustomUserAdmin(BaseUserAdmin):
@@ -19,14 +19,14 @@ class CustomUserAdmin(BaseUserAdmin):
     list_display = ('email', 'username', 'is_staff', 'is_professional', 'date_joined')
     search_fields = ('email', 'username', 'full_name')
 
-@admin.register(ImporterProfile)
-class ImporterProfileAdmin(admin.ModelAdmin):
-    """
-    Administration pour le modèle ImporterProfile.
-    """
-    list_display = ('user', 'full_name', 'legal_personality')
-    search_fields = ('user__email', 'full_name')
-    list_filter = ('legal_personality',)
+# @admin.register(ImporterProfile)
+# class ImporterProfileAdmin(admin.ModelAdmin):
+#     """
+#     Administration pour le modèle ImporterProfile.
+#     """
+#     list_display = ('user', 'full_name', 'legal_personality')
+#     search_fields = ('user__email', 'full_name')
+#     list_filter = ('legal_personality',)
 
 @admin.register(ProductCategory)
 class ProductCategoryAdmin(admin.ModelAdmin):

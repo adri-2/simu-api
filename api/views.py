@@ -13,7 +13,7 @@ from django.template.loader import render_to_string
 from django.utils.html import strip_tags
 import uuid # Pour générer des codes de confirmation uniques
 
-from .models import User, ImporterProfile, ProductCategory, Product, Simulation
+from .models import User, ProductCategory, Product, Simulation
 from .serializers import (
     UserRegistrationSerializer, UserProfileSerializer, ProductCategorySerializer,
     ProductSerializer, SimulationCreateSerializer, SimulationDetailSerializer,
@@ -40,8 +40,9 @@ class UserRegistrationView(generics.CreateAPIView):
     def create(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
+
         try:
-            with transaction.atomic(): # Assure l'atomicité de la création utilisateur/profil
+            with transaction.atomic():
                 user = serializer.save()
         except Exception as e:
             return Response(
@@ -49,14 +50,12 @@ class UserRegistrationView(generics.CreateAPIView):
                 status=status.HTTP_400_BAD_REQUEST
             )
 
-        # Générer les tokens JWT après l'enregistrement
-        refresh = RefreshToken.for_user(user)
-        return Response({
-            'user': UserProfileSerializer(user).data,
-            'access': str(refresh.access_token),
-            'refresh': str(refresh),
-        }, status=status.HTTP_201_CREATED)
-
+        return Response(
+            {"detail": "Utilisateur créé avec succès"},
+            status=status.HTTP_201_CREATED
+        )
+        
+        
 class UserProfileView(generics.RetrieveUpdateAPIView):
     """
     Vue pour récupérer et mettre à jour le profil de l'utilisateur connecté.

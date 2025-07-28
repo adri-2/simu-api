@@ -18,33 +18,33 @@ class User(AbstractUser):
     def __str__(self):
         return self.email
 
-class LegalPersonality(models.TextChoices):
-    """
-    Choix pour la personnalité juridique d'un importateur.
-    """
-    PHYSICAL = 'PF', 'Personne Physique'
-    MORAL = 'PM', 'Personne Morale'
+# class LegalPersonality(models.TextChoices):
+#     """
+#     Choix pour la personnalité juridique d'un importateur.
+#     """
+#     PHYSICAL = 'PF', 'Personne Physique'
+#     MORAL = 'PM', 'Personne Morale'
 
-class ImporterProfile(models.Model):
-    """
-    Profil de l'importateur, lié à un utilisateur.
-    Contient les informations spécifiques à l'importateur.
-    """
-    user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='importer_profile')
-    full_name = models.CharField(max_length=255, blank=False, null=False)
-    legal_personality = models.CharField(
-        max_length=2,
-        choices=LegalPersonality.choices,
-        default=LegalPersonality.PHYSICAL
-    )
-    # Ajouter d'autres champs de profil si nécessaire
+# # class ImporterProfile(models.Model):
+# #     """
+# #     Profil de l'importateur, lié à un utilisateur.
+# #     Contient les informations spécifiques à l'importateur.
+# #     """
+# #     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='importer_profile')
+# #     full_name = models.CharField(max_length=255, blank=False, null=False)
+# #     legal_personality = models.CharField(
+# #         max_length=2,
+# #         choices=LegalPersonality.choices,
+# #         default=LegalPersonality.PHYSICAL
+# #     )
+# #     # Ajouter d'autres champs de profil si nécessaire
 
-    class Meta:
-        verbose_name = "Profil Importateur"
-        verbose_name_plural = "Profils Importateurs"
+# #     class Meta:
+# #         verbose_name = "Profil Importateur"
+# #         verbose_name_plural = "Profils Importateurs"
 
-    def __str__(self):
-        return f"Profil de {self.full_name} ({self.user.email})"
+# #     def __str__(self):
+# #         return f"Profil de {self.full_name} ({self.user.email})"
 
 class TariffSpecies(models.TextChoices):
     """
@@ -125,6 +125,8 @@ class Simulation(models.Model):
     is_paid = models.BooleanField(default=False, verbose_name="Paiement confirmé")
     payment_confirmation_code = models.CharField(max_length=50, blank=True, null=True, unique=True, verbose_name="Code de confirmation de paiement")
     response_email_sent = models.BooleanField(default=False, verbose_name="Email de réponse envoyé")
+    date_created = models.DateTimeField(auto_now_add=True, verbose_name="Date de création")
+    # date_updated = models.DateTimeField(auto_now=True, verbose_name="Date de mise à
 
     # Champs pour stocker les résultats de la simulation
     customs_value_vd = models.DecimalField(max_digits=15, decimal_places=2, default=0, verbose_name="Valeur en Douane (VD) calculée")
