@@ -64,21 +64,6 @@ class UserProfileSerializer(serializers.ModelSerializer):
         fields = ('id', 'email', 'username', 'phone_number','first_name','last_name', 'is_professional', 'date_joined', 'last_login', )
         read_only_fields = ('email', 'username', 'is_professional', 'date_joined', 'last_login')
 
-    # def get_importer_profile(self, obj):
-    #     """
-    #     Retourne les détails du profil importateur si existant.
-    #     """
-    #     if hasattr(obj, 'importer_profile'):
-    #         return ImporterProfileSerializer(obj.importer_profile).data
-    #     return None
-
-# class ImporterProfileSerializer(serializers.ModelSerializer):
-#     """
-#     Serializer pour le profil importateur.
-#     """
-#     class Meta:
-#         model = ImporterProfile
-#         fields = ('full_name', 'legal_personality')
 
 class ProductCategorySerializer(serializers.ModelSerializer):
     """

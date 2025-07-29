@@ -1,6 +1,6 @@
 # core/views.py
 
-from rest_framework import generics, viewsets, status
+from rest_framework import generics, viewsets, status, mixins
 from rest_framework.response import Response
 from rest_framework.decorators import action
 from rest_framework.permissions import AllowAny, IsAuthenticated, IsAdminUser
@@ -57,18 +57,10 @@ class UserRegistrationView(generics.CreateAPIView):
         
         
 class UserProfileView(generics.RetrieveUpdateAPIView):
-    """
-    Vue pour récupérer et mettre à jour le profil de l'utilisateur connecté.
-    Accessible uniquement par l'utilisateur propriétaire ou un administrateur.
-    """
-    queryset = User.objects.all()
     serializer_class = UserProfileSerializer
-    # permission_classes = (IsAuthenticated, IsOwnerOrAdmin)
+    permission_classes = [IsAuthenticated]
 
     def get_object(self):
-        """
-        Retourne l'objet User pour l'utilisateur authentifié.
-        """
         return self.request.user
 
 class ProductCategoryViewSet(viewsets.ModelViewSet):
@@ -111,6 +103,22 @@ class ProductViewSet(viewsets.ModelViewSet):
     #         self.permission_classes = [IsAuthenticated] # Lecture pour tous les authentifiés
     #     return [permission() for permission in self.permission_classes]
 
+
+
+class SimulationViewSetHistorique(viewsets.ReadOnlyModelViewSet):
+    """
+    Vue pour récupérer uniquement l'historique des simulations de l'utilisateur connecté.
+    Accessible uniquement en lecture (GET).
+    """
+    permission_classes = [IsAuthenticated]
+    serializer_class = SimulationDetailSerializer
+
+    def get_queryset(self):
+        if self.request.user.is_staff or self.request.user.is_superuser:
+            return Simulation.objects.all()
+        return Simulation.objects.filter(user=self.request.user)
+    
+    
 class SimulationViewSet(viewsets.ModelViewSet):
     """
     API endpoint qui permet aux simulations d'être créées, vues, éditées ou supprimées.
@@ -242,5 +250,3 @@ class SimulationViewSet(viewsets.ModelViewSet):
             fail_silently=False,
         )
         print(f"Email envoyé à {recipient_email} pour la simulation #{simulation.id}")
-
-

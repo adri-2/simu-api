@@ -38,11 +38,9 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'corsheaders',  # Pour gérer les CORS
-    # 'whitenoise.runserver_nostatic',  # Pour servir les fichiers statiques en mode développement
-    # 'whitenoise.middleware.WhiteNoiseMiddleware',  # Pour servir les fichiers statiques en production
-    # ...
+  
     'rest_framework',
-    # 'rest_framework_simplejwt',
+    'rest_framework_simplejwt',
        'drf_yasg',
     'django_filters', # Pour le filtrage si nécessaire
     'api', # Le nom de ton application principale (ou une app nommée 'simu')
@@ -51,24 +49,30 @@ INSTALLED_APPS = [
 
 # Configuration DRF
 REST_FRAMEWORK = {
-    # 'DEFAULT_AUTHENTICATION_CLASSES': (
-    #     'rest_framework_simplejwt.authentication.JWTAuthentication',
-    #     #  'rest_framework.renderers.BrowsableAPIRenderer',
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
+        #  'rest_framework.renderers.BrowsableAPIRenderer',
         
-    # ),
+    ),
     # 'DEFAULT_PERMISSION_CLASSES': (
     #     # 'api.permissions.IsOwnerOrAdmin',  # Utilise la permission personnalisée
     #     'rest_framework.permissions.IsAuthenticated',  # Assure que l'utilisateur est authentifié
     # ),
-    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
-    'PAGE_SIZE': 10, # Nombre d'éléments par page par défaut
+    # 'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
+    # 'PAGE_SIZE': 10, # Nombre d'éléments par page par défaut
     'DEFAULT_FILTER_BACKENDS': (
         'django_filters.rest_framework.DjangoFilterBackend',
     ),
 }
 
 # Configuration JWT
-# from datetime import timedelta
+from datetime import timedelta
+
+SIMPLE_JWT = {
+    "ACCESS_TOKEN_LIFETIME": timedelta(minutes=60),
+    "REFRESH_TOKEN_LIFETIME": timedelta(days=1),
+    "AUTH_HEADER_TYPES": ("Bearer",),
+}
 
 # SIMPLE_JWT = {
 #     'ACCESS_TOKEN_LIFETIME': timedelta(minutes=60),
@@ -99,14 +103,20 @@ REST_FRAMEWORK = {
 #     'SLIDING_TOKEN_REFRESH_LIFETIME': timedelta(days=1),
 # }
 
+CORS_ALLOWED_ORIGINS = [
+    "http://localhost:5173",  # ton front React
+]
 
 
-CORS_ALLOW_ALL_ORIGINS = True 
+# CORS_ALLOW_ALL_ORIGINS = True 
+# ✅ Nécessaire pour les cookies
+CORS_ALLOW_CREDENTIALS = True
 
 # SITE_ID = 1
 MIDDLEWARE = [
+    'corsheaders.middleware.CorsMiddleware',
       'whitenoise.middleware.WhiteNoiseMiddleware',
-     'corsheaders.middleware.CorsMiddleware',
+     
     # 'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -142,12 +152,12 @@ WSGI_APPLICATION = 'core.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
 # if DEBUG:
-# DATABASES = {
-#     'default': {
-#         'ENGINE': 'django.db.backends.sqlite3',
-#         'NAME': BASE_DIR / 'db.sqlite3',
-#     }
-#     }
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': BASE_DIR / 'db.sqlite3',
+    }
+    }
 # else:
     # Configuration pour la base de données de production sur railway
 from dotenv import load_dotenv
@@ -156,13 +166,13 @@ import os
 
 
 # # Charger les variables d'environnement depuis le fichier .env
-load_dotenv()
+# load_dotenv()
 
-DATABASES = {
-    'default': dj_database_url.config(
-        default=os.getenv("DATABASE_URL")
-    )
-}
+# DATABASES = {
+#     'default': dj_database_url.config(
+#         default=os.getenv("DATABASE_URL")
+#     )
+# }
 
 SWAGGER_SETTINGS = {
     # ...

@@ -2,6 +2,7 @@
 
 from django.db import models
 from django.contrib.auth.models import AbstractUser
+from decimal import Decimal
 
 class User(AbstractUser):
     """
@@ -17,34 +18,6 @@ class User(AbstractUser):
 
     def __str__(self):
         return self.email
-
-# class LegalPersonality(models.TextChoices):
-#     """
-#     Choix pour la personnalité juridique d'un importateur.
-#     """
-#     PHYSICAL = 'PF', 'Personne Physique'
-#     MORAL = 'PM', 'Personne Morale'
-
-# # class ImporterProfile(models.Model):
-# #     """
-# #     Profil de l'importateur, lié à un utilisateur.
-# #     Contient les informations spécifiques à l'importateur.
-# #     """
-# #     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='importer_profile')
-# #     full_name = models.CharField(max_length=255, blank=False, null=False)
-# #     legal_personality = models.CharField(
-# #         max_length=2,
-# #         choices=LegalPersonality.choices,
-# #         default=LegalPersonality.PHYSICAL
-# #     )
-# #     # Ajouter d'autres champs de profil si nécessaire
-
-# #     class Meta:
-# #         verbose_name = "Profil Importateur"
-# #         verbose_name_plural = "Profils Importateurs"
-
-# #     def __str__(self):
-# #         return f"Profil de {self.full_name} ({self.user.email})"
 
 class TariffSpecies(models.TextChoices):
     """
@@ -125,7 +98,7 @@ class Simulation(models.Model):
     is_paid = models.BooleanField(default=False, verbose_name="Paiement confirmé")
     payment_confirmation_code = models.CharField(max_length=50, blank=True, null=True, unique=True, verbose_name="Code de confirmation de paiement")
     response_email_sent = models.BooleanField(default=False, verbose_name="Email de réponse envoyé")
-    date_created = models.DateTimeField(auto_now_add=True, verbose_name="Date de création")
+    date_created = models.DateTimeField(auto_now_add=True, verbose_name="Date de création",null=True)
     # date_updated = models.DateTimeField(auto_now=True, verbose_name="Date de mise à
 
     # Champs pour stocker les résultats de la simulation
@@ -162,51 +135,51 @@ class Simulation(models.Model):
 
         # Droit de Douane (DD)
         dd_rate_map = {
-            TariffSpecies.NECESSITY_GOODS: 0.05,
-            TariffSpecies.RAW_MATERIALS: 0.10,
-            TariffSpecies.INTERMEDIATE_DIVERSE_GOODS: 0.20,
-            TariffSpecies.CONSUMPTION_GOODS: 0.30,
+            TariffSpecies.NECESSITY_GOODS: Decimal(0.05),
+            TariffSpecies.RAW_MATERIALS: Decimal(0.10),
+            TariffSpecies.INTERMEDIATE_DIVERSE_GOODS: Decimal(0.20),
+            TariffSpecies.CONSUMPTION_GOODS: Decimal(0.30),
         }
-        dd_rate = dd_rate_map.get(self.product.tariff_species, 0)
+        dd_rate = dd_rate_map.get(self.product.tariff_species,  Decimal(0))
         self.customs_duty_dd = self.customs_value_vd * dd_rate
 
         # Droit d'Accise (DA)
         self.excise_duty_da = 0
         base_for_da = self.customs_value_vd + self.customs_duty_dd
         if self.product.is_luxury:
-            self.excise_duty_da = base_for_da * 0.25
+            self.excise_duty_da = base_for_da * Decimal(0.25)
         elif self.product.is_alcohol_tobacco:
-            self.excise_duty_da = base_for_da * 0.25
+            self.excise_duty_da = base_for_da * Decimal(0.25)
         elif self.product.is_vehicle:
-            self.excise_duty_da = base_for_da * 0.125
+            self.excise_duty_da = base_for_da * Decimal(0.125)
 
         # TVA (17,5%)
         base_for_tva = self.customs_value_vd + self.customs_duty_dd + self.excise_duty_da
-        self.vat_tva = base_for_tva * 0.175
+        self.vat_tva = base_for_tva *Decimal( 0.175)
 
         # Centimes Additionnels Communaux (CAC) 10% de la TVA
-        self.communal_additional_cac = self.vat_tva * 0.10
+        self.communal_additional_cac = self.vat_tva * Decimal(0.10)
 
         # Redevance Informatique (RI) 0,45% de VD
-        self.it_royalty_ri = self.customs_value_vd * 0.0045
+        self.it_royalty_ri = self.customs_value_vd * Decimal(0.0045)
 
         # Taxe Communautaire d'Intégration (TCI) 0,6% de VD
-        self.community_integration_tci = self.customs_value_vd * 0.006
+        self.community_integration_tci = self.customs_value_vd * Decimal(0.006)
 
         # Contribution pour l'Intégration (CIA) 0,4% de VD
-        self.integration_contribution_cia = self.customs_value_vd * 0.004
+        self.integration_contribution_cia = self.customs_value_vd * Decimal(0.004)
 
         # Prélèvement OHADA (PRO) 0,05% VD
-        self.ohada_levy_pro = self.customs_value_vd * 0.0005
+        self.ohada_levy_pro = self.customs_value_vd * Decimal(0.0005)
 
         # Précompte sur Achat (PRD)
-        self.purchase_prepayment_prd = self.customs_value_vd * (0.01 if self.has_niu else 0.05)
+        self.purchase_prepayment_prd = self.customs_value_vd * (Decimal(0.01) if self.has_niu else Decimal(0.05))
 
         # Frais de facilitation GUCE
         # Initialisé à 12500 par défaut dans le modèle, pas de calcul ici
 
         # Taxe phytosanitaire
-        self.phytosanitary_tax = 0
+        self.phytosanitary_tax =  Decimal(0)
         if self.product.is_phytosanitary:
             self.phytosanitary_tax = self.weight_in_tons * 50
 
@@ -239,6 +212,3 @@ class Simulation(models.Model):
         self.calculate_customs_cost()
         super().save(*args, **kwargs)
 
-# N'oublie pas de faire les migrations après avoir créé/modifié les modèles :
-# python manage.py makemigrations
-# python manage.py migrate
